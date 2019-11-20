@@ -10,8 +10,6 @@ namespace Movies.Pages
     public class IndexModel : PageModel
     {
 
-        public MovieDatabase MovieDatabase = new MovieDatabase();
-
         public List<Movie> Movies;
 
         [BindProperty]
@@ -22,6 +20,9 @@ namespace Movies.Pages
 
         [BindProperty]
         public float? minIMDB { get; set; }
+
+        [BindProperty]
+        public float? maxIMDB { get; set; }
 
         public void OnGet()
         {
@@ -51,6 +52,10 @@ namespace Movies.Pages
             if (minIMDB is float min)
             {
                 Movies = MovieDatabase.FilterByMinIMDB(Movies, min);
+            }
+            if (maxIMDB is float max)
+            {
+                Movies = MovieDatabase.FilterByMaxIMDB(Movies, max);
             }
         }
     }

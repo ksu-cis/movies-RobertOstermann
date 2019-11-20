@@ -12,24 +12,25 @@ namespace Movies
     /// </summary>
     public class MovieDatabase
     {
-        private List<Movie> movies = new List<Movie>();
+        private static List<Movie> movies;
 
-        /// <summary>
-        /// Loads the movie database from the JSON file
-        /// </summary>
-        public MovieDatabase()
+        public static List<Movie> All
         {
-
-            using (StreamReader file = System.IO.File.OpenText("movies.json"))
+            get
             {
-                string json = file.ReadToEnd();
-                movies = JsonConvert.DeserializeObject<List<Movie>>(json);
+                if (movies == null)
+                {
+                    using (StreamReader file = System.IO.File.OpenText("movies.json"))
+                    {
+                        string json = file.ReadToEnd();
+                        movies = JsonConvert.DeserializeObject<List<Movie>>(json);
+                    }
+                }
+                return movies;
             }
         }
 
-        public List<Movie> All { get { return movies; } }
-
-        public List<Movie> Search(string term)
+        public static List<Movie> Search(string term)
         {
             List<Movie> results = new List<Movie>();
 
@@ -47,7 +48,7 @@ namespace Movies
             return results;
         }
 
-        public List<Movie> FilterByMPAA(List<Movie> movies, List<string> mpaa)
+        public static List<Movie> FilterByMPAA(List<Movie> movies, List<string> mpaa)
         {
             List<Movie> results = new List<Movie>();
 
@@ -62,13 +63,28 @@ namespace Movies
             return results;
         }
 
-        public List<Movie> FilterByMinIMDB(List<Movie> movies, float min)
+        public static List<Movie> FilterByMinIMDB(List<Movie> movies, float min)
         {
             List<Movie> results = new List<Movie>();
 
             foreach (Movie movie in movies)
             {
                 if (movie.IMDB_Rating != null && movie.IMDB_Rating >= min)
+                {
+                    results.Add(movie);
+                }
+            }
+
+            return results;
+        }
+
+        public static List<Movie> FilterByMaxIMDB(List<Movie> movies, float max)
+        {
+            List<Movie> results = new List<Movie>();
+
+            foreach (Movie movie in movies)
+            {
+                if (movie.IMDB_Rating != null && movie.IMDB_Rating <= max)
                 {
                     results.Add(movie);
                 }
